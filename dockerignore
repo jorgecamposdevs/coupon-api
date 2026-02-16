@@ -1,0 +1,8 @@
+# ignora tudo
+*
+
+# permite arquivos necessários
+!Dockerfile
+!docker-compose*.yml
+!target/
+!target/*.jar

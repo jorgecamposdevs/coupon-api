@@ -1,0 +1,10 @@
+services:
+  server:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+      - ~/.m2:/root/.m2
+    environment:
+      SPRING_PROFILES_ACTIVE: dev

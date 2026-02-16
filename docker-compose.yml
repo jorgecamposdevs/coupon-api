@@ -1,0 +1,9 @@
+services:
+  server:
+    build: .
+    container_name: sales-flow-app
+    volumes:
+      - ./tmp:/app/tmp
+      - ./log:/app/log
+    ports:
+      - '8080:8080'
