@@ -14,4 +14,14 @@ public class CouponService  {
     public CouponEntity createCoupon(CouponEntity couponEntity) {
         return couponRepository.save(couponEntity);
     }
+
+    public void softDeleteById(Long id) {
+
+        CouponEntity coupon = couponRepository.findById(id)
+                        .orElseThrow(()-> new RuntimeException("Cupom não encontrado"));
+
+        coupon.setDeleted(true);
+
+        couponRepository.save(coupon);
+    }
 }

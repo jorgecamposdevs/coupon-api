@@ -18,4 +18,8 @@ public class CouponFacade {
     public CouponEntity createCoupon(CouponRequestDTO couponRequestDTO) {
         return couponService.createCoupon(couponMappers.convertCouponRequestDTOToCouponEntity(couponRequestDTO));
     }
+
+    public void softDeleteById(Long id) {
+        couponService.softDeleteById(id);
+    }
 }
