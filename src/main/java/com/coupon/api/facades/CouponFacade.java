@@ -4,19 +4,16 @@ import com.coupon.api.dtos.requests.CouponRequestDTO;
 import com.coupon.api.entities.CouponEntity;
 import com.coupon.api.mappers.CouponMappers;
 import com.coupon.api.services.CouponService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class CouponFacade {
 
     private final CouponService couponService;
 
     private final CouponMappers couponMappers;
-
-    public CouponFacade(CouponService couponService, CouponMappers couponMappers) {
-        this.couponService = couponService;
-        this.couponMappers = couponMappers;
-    }
 
     public CouponEntity createCoupon(CouponRequestDTO couponRequestDTO) {
         return couponService.createCoupon(couponMappers.convertCouponRequestDTOToCouponEntity(couponRequestDTO));
