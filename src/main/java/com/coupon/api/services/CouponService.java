@@ -22,7 +22,7 @@ public class CouponService  {
         CouponEntity coupon = couponRepository.findById(id)
                         .orElseThrow(()-> new RuntimeException("Cupom não encontrado"));
 
-       coupon.setDeleted(true);
+       coupon.setDeleted(Boolean.TRUE);
 
         couponRepository.save(coupon);
     }

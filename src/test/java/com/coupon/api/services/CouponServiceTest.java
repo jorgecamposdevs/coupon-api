@@ -2,12 +2,15 @@ package com.coupon.api.services;
 
 import com.coupon.api.entities.CouponEntity;
 import com.coupon.api.repository.CouponRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,46 +25,66 @@ class CouponServiceTest {
     @InjectMocks
     private CouponService couponService;
 
+
     @Test
+    @DisplayName("Deve criar um cupom")
     void shouldCreateCouponSuccessfully() {
 
-        CouponEntity coupon = new CouponEntity();
-        coupon.setId(1L);
+        CouponEntity input = new CouponEntity();
+        input.setCode("SAVE20");
+        input.setDiscountValue(new BigDecimal("20.00"));
+        input.setExpirationDate(LocalDate.now().plusDays(10));
 
-        when(couponRepository.save(coupon)).thenReturn(coupon);
+        CouponEntity output = new CouponEntity();
+        output.setId(1L);
+        output.setCode("SAVE20");
+        output.setDiscountValue(new BigDecimal("20.00"));
+        output.setPublished(true);
 
-        CouponEntity result = couponService.createCoupon(coupon);
+        when(couponRepository.save(input)).thenReturn(output);
+
+        CouponEntity result = couponService.createCoupon(input);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
-        verify(couponRepository, times(1)).save(coupon);
+        assertEquals("SAVE20", result.getCode());
+        assertEquals(new BigDecimal("20.00"), result.getDiscountValue());
+
+        verify(couponRepository, times(1)).save(input);
     }
 
     @Test
-    void shouldSoftDeleteCoupon() {
+    @DisplayName("Deve marcar o cupom como deletado quando o ID existir")
+    void shouldSoftDeleteCouponSuccessfully() {
+
+        Long couponId = 1L;
 
         CouponEntity coupon = new CouponEntity();
-        coupon.setId(1L);
-        coupon.setDeleted(false);
+        coupon.setId(couponId);
+        coupon.setDeleted(Boolean.FALSE);
 
-        when(couponRepository.findById(1L))
-                .thenReturn(Optional.of(coupon));
+        when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
 
-        couponService.softDeleteById(1L);
+        couponService.softDeleteById(couponId);
 
-        assertTrue(coupon.getDeleted());
-        verify(couponRepository).save(coupon);
+        assertTrue(coupon.isDeleted());
+        verify(couponRepository, times(1)).save(coupon);
+
     }
 
+
     @Test
+    @DisplayName("Deve lançar uma exceção")
     void shouldThrowExceptionWhenCouponNotFound() {
 
-        when(couponRepository.findById(1L))
+        Long couponId = 1L;
+
+        when(couponRepository.findById(couponId))
                 .thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(
                 RuntimeException.class,
-                () -> couponService.softDeleteById(1L)
+                () -> couponService.softDeleteById(couponId)
         );
 
         assertEquals("Cupom não encontrado", exception.getMessage());
